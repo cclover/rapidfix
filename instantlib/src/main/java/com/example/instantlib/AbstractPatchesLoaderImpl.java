@@ -18,6 +18,8 @@
 package com.example.instantlib;
 
 
+import android.util.Log;
+
 import java.lang.reflect.Field;
 
 public abstract class AbstractPatchesLoaderImpl implements PatchesLoader {
@@ -29,8 +31,7 @@ public abstract class AbstractPatchesLoaderImpl implements PatchesLoader {
         try {
             for (String className : getPatchedClasses()) {
                 ClassLoader cl = getClass().getClassLoader();
-                //Class<?> aClass = cl.loadClass(className + "$override");
-                Class<?> aClass = cl.loadClass(className);
+                Class<?> aClass = cl.loadClass(className + "$override");
                 Object o = aClass.newInstance();
                 Class<?> originalClass = cl.loadClass(className);
                 Field changeField = originalClass.getDeclaredField("$change");
