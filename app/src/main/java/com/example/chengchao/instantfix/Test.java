@@ -6,33 +6,35 @@ package com.example.chengchao.instantfix;
 
 public class Test {
 
-    private static Object stub = null;
+    private static Object $change = null;
+    private static Boolean $obsolete = false;
 
     public String show() {
 
-        if(stub != null){
-            return ((Test)stub).show();
+        if(!$obsolete && $change != null){
+            return ((Test)$change).show();
         }
         return "This is test2";
     }
 
     public int add(int x, int y) {
-        if(stub != null){
-            return ((Test)stub).add(x,y);
+        if(!$obsolete && $change != null){
+            return ((Test)$change).add(x,y);
         }
         return x+y;
     }
 
     public String getInfo(){
-        if(stub != null){
-            return ((Test)stub).getInfo();
+        if(!$obsolete && $change != null){
+            return ((Test)$change).getInfo();
         }
         return new Module().toString();
     }
 
     public String getInfo(Module modle) {
-        if(stub != null){
-            return ((Test)stub).getInfo(modle);
+
+        if(!$obsolete && $change != null){
+            return ((Test)$change).getInfo(modle);
         }
         return modle.toString();
     }

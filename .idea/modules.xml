@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/InstantFix.iml" filepath="$PROJECT_DIR$/InstantFix.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/instantlib/instantlib.iml" filepath="$PROJECT_DIR$/instantlib/instantlib.iml" />
     </modules>
   </component>
 </project>
