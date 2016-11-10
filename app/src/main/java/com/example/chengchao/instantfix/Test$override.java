@@ -4,7 +4,7 @@ package com.example.chengchao.instantfix;
  * Created by chengchao on 2016/11/10.
  */
 
-public class Test {
+public class Test$override extends Test {
 
     private static Object $change = null;
     private static Boolean $obsolete = false;
@@ -12,21 +12,21 @@ public class Test {
     public String show() {
 
         if(!$obsolete && $change != null){
-            return ((Test)$change).show();
+            return ((Test$override)$change).show();
         }
-        return "This is test1";
+        return "This is test2";
     }
 
     public int add(int x, int y) {
         if(!$obsolete && $change != null){
-            return ((Test)$change).add(x,y);
+            return ((Test$override)$change).add(x,y);
         }
         return x+y;
     }
 
     public String getInfo(){
         if(!$obsolete && $change != null){
-            return ((Test)$change).getInfo();
+            return ((Test$override)$change).getInfo();
         }
         return new Module().toString();
     }
@@ -34,7 +34,7 @@ public class Test {
     public String getInfo(Module modle) {
 
         if(!$obsolete && $change != null){
-            return ((Test)$change).getInfo(modle);
+            return ((Test$override)$change).getInfo(modle);
         }
         return modle.toString();
     }
