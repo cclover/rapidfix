@@ -21,12 +21,21 @@ public class InstantFix {
 
     public static boolean patch(Context context){
         if(hasPatch(context)){
-
+            Log.d(TAG, "patch");
             try {
                 // load patch
-                DexClassLoader patchClassLoader = new DexClassLoader(patchFilePath, context.getFilesDir().getAbsolutePath(), null, ClassLoader.getSystemClassLoader());
+                Log.d(TAG, "create the class loader");
+                DexClassLoader patchClassLoader = new DexClassLoader(patchFilePath, context.getFilesDir().getAbsolutePath(), null, context.getClassLoader());
+
+                Log.d(TAG, "Load the PatchesLoaderImpl");
                 Class<?> clazz = patchClassLoader.loadClass(PATCH_LOADER_IMPL_CLASS_NAME);
+
+                Log.d(TAG, "New the PatchesLoaderImpl");
                 PatchesLoader loader = (PatchesLoader)clazz.newInstance();
+
+                Log.d(TAG, "PatchesLoaderImpl classloader is : " + clazz.getClassLoader().toString());
+
+                Log.d(TAG, "Invoke the load()");
                 return loader.load();
             }catch (Exception ex){
                 ex.printStackTrace();

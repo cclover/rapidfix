@@ -29,7 +29,8 @@ public abstract class AbstractPatchesLoaderImpl implements PatchesLoader {
         try {
             for (String className : getPatchedClasses()) {
                 ClassLoader cl = getClass().getClassLoader();
-                Class<?> aClass = cl.loadClass(className + "$override");
+                //Class<?> aClass = cl.loadClass(className + "$override");
+                Class<?> aClass = cl.loadClass(className);
                 Object o = aClass.newInstance();
                 Class<?> originalClass = cl.loadClass(className);
                 Field changeField = originalClass.getDeclaredField("$change");

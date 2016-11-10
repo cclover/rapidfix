@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnPatch){
+            InstantFix.getPatchFromAsset(getApplicationContext());
             if(InstantFix.patch(getApplicationContext())){
                 Snackbar.make(view, "Apply the patch", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
