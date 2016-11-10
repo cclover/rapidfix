@@ -9,8 +9,8 @@ public class PatchesLoaderImpl extends AbstractPatchesLoaderImpl {
     @Override
     public String[] getPatchedClasses() {
         String[] list = {
-            "com.example.chengchao.instantfix.Test$override",
-            "com.example.chengchao.instantfix.Module$override"
+            "com.example.chengchao.instantfix.Test",
+            "com.example.chengchao.instantfix.Module"
         };
         return list;
     }
