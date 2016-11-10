@@ -8,12 +8,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+
+import com.example.instantlib.InstantFix;
 
 import java.lang.reflect.Field;
 
 import dalvik.system.DexClassLoader;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    Button btnTest;
+    Button btnPatch;
+    Test t1 = new Test();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        btnTest = (Button)findViewById(R.id.btnTest);
+        btnPatch = (Button)findViewById(R.id.btnPatch);
+        btnTest.setOnClickListener(this);
+        btnPatch.setOnClickListener(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -58,5 +71,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.btnPatch){
+            if(InstantFix.patch(getApplicationContext())){
+                Snackbar.make(view, "Apply the patch", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }else{
+                Snackbar.make(view, "No patch or failed", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        }else if(view.getId() == R.id.btnTest){
+            Snackbar.make(view, "The result is :" + t1.getInfo(new Module()), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
     }
 }

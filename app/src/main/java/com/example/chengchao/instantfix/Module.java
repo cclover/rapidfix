@@ -6,11 +6,12 @@ package com.example.chengchao.instantfix;
 
 public class Module {
 
-    private static Object stub = null;
+    private static Object $change = null;
+    private static Boolean $obsolete = false;
 
     public String toString() {
-        if(stub != null){
-            return ((Module)stub).toString();
+        if(!$obsolete && $change != null){
+            return ((Module)$change).toString();
         }
         return "Module1";
     }
