@@ -13,7 +13,7 @@ public class Test {
         if(stub != null){
             return ((Test)stub).show();
         }
-        return "This is test1";
+        return "This is test2";
     }
 
     public int add(int x, int y) {
@@ -31,6 +31,9 @@ public class Test {
     }
 
     public String getInfo(Module modle) {
-        return ((Test)stub).toString();
+        if(stub != null){
+            return ((Test)stub).getInfo(modle);
+        }
+        return modle.toString();
     }
 }

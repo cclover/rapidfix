@@ -12,6 +12,6 @@ public class Module {
         if(stub != null){
             return ((Module)stub).toString();
         }
-        return "Module1";
+        return "Module2";
     }
 }
