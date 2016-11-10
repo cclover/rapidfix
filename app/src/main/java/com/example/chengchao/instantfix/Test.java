@@ -4,37 +4,33 @@ package com.example.chengchao.instantfix;
  * Created by chengchao on 2016/11/10.
  */
 
-public class Test implements IFunction {
+public class Test {
 
-    private static IFunction stub = null;
+    private static Object stub = null;
 
-    @Override
     public String show() {
 
         if(stub != null){
-            return stub.show();
+            return ((Test)stub).show();
         }
         return "This is test1";
     }
 
-    @Override
     public int add(int x, int y) {
         if(stub != null){
-            return stub.add(x,y);
+            return ((Test)stub).add(x,y);
         }
         return x+y;
     }
 
-    @Override
     public String getInfo(){
         if(stub != null){
-            return stub.getInfo();
+            return ((Test)stub).getInfo();
         }
         return new Module().toString();
     }
 
-    @Override
-    public String getInfo(IModule modle) {
-        return modle.toString();
+    public String getInfo(Module modle) {
+        return ((Test)stub).toString();
     }
 }

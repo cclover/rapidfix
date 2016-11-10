@@ -4,14 +4,13 @@ package com.example.chengchao.instantfix;
  * Created by chengchao on 2016/11/10.
  */
 
-public class Module implements IModule {
+public class Module {
 
-    private static IModule stub = null;
+    private static Object stub = null;
 
-    @Override
     public String toString() {
         if(stub != null){
-            return  stub.toString();
+            return ((Module)stub).toString();
         }
         return "Module1";
     }

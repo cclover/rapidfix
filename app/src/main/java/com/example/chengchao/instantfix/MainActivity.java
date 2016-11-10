@@ -28,23 +28,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 try{
-                    Class<?> clazz = Class.forName(Test$override.class.getName());
-                    IFunction newIns = (IFunction)clazz.newInstance();
-
-                    Class<?> clazzOld = Class.forName(Test.class.getName());
-                    Field stubField =  clazzOld.getDeclaredField("stub");
-                    stubField.setAccessible(true);
-                    stubField.set(null, newIns);
-
-
-                    Class<?> clazz2 = Class.forName(Module$override.class.getName());
-                    IModule newIns2 = (IModule)clazz2.newInstance();
-
-                    Class<?> clazzOld2 = Class.forName(Module.class.getName());
-                    Field stubField2 =  clazzOld2.getDeclaredField("stub");
-                    stubField2.setAccessible(true);
-                    stubField2.set(null, newIns2);
-
                     Test t = new Test();
                     Snackbar.make(view, "The result is :" + t.getInfo(new Module()), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
