@@ -44,6 +44,33 @@ public class InstantFix {
         return false;
     }
 
+    public static boolean revertPatch(Context context){
+        if(hasPatch(context)){
+            Log.d(TAG, "revert patch");
+            try {
+                // load patch
+                Log.d(TAG, "create the class loader");
+                DexClassLoader patchClassLoader = new DexClassLoader(patchFilePath, context.getFilesDir().getAbsolutePath(), null, context.getClassLoader());
+
+                Log.d(TAG, "Load the PatchesLoaderImpl");
+                Class<?> clazz = patchClassLoader.loadClass(PATCH_LOADER_IMPL_CLASS_NAME);
+
+                Log.d(TAG, "New the PatchesLoaderImpl");
+                PatchesLoader loader = (PatchesLoader)clazz.newInstance();
+
+                Log.d(TAG, "PatchesLoaderImpl classloader is : " + clazz.getClassLoader().toString());
+
+                Log.d(TAG, "Invoke the unload()");
+                return loader.unLoad();
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }finally {
+                removePatch(context);
+            }
+        }
+        return false;
+    }
+
 
     private static boolean hasPatch(Context context) {
 
@@ -69,6 +96,15 @@ public class InstantFix {
                 Log.d("TAG", "Copy patch failed: " + ex.getMessage());
                 return false;
             }
+        }
+        return false;
+    }
+
+    //remove patch file
+    public static boolean removePatch(Context context){
+        File patchFile = new File(context.getFilesDir(), PATCH_NAME);
+        if (patchFile.exists()) {
+            return patchFile.delete();
         }
         return false;
     }

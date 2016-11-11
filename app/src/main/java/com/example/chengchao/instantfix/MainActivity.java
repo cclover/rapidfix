@@ -20,7 +20,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button btnTest;
     Button btnPatch;
+    Button btnGetPatch;
+    Button btnRevertPath;
     Test t1 = new Test();
+
+    private static MainActivity $change = null;
 
 
     @Override
@@ -32,8 +36,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnTest = (Button)findViewById(R.id.btnTest);
         btnPatch = (Button)findViewById(R.id.btnPatch);
+        btnGetPatch = (Button)findViewById(R.id.btnGetPatch);
+        btnRevertPath = (Button)findViewById(R.id.btnRevertPatch);
+
         btnTest.setOnClickListener(this);
         btnPatch.setOnClickListener(this);
+        btnGetPatch.setOnClickListener(this);
+        btnRevertPath.setOnClickListener(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 try{
                     Test t = new Test();
-                    Snackbar.make(view, "The result is :" + t.getInfo(new Module()), Snackbar.LENGTH_LONG)
+                    Snackbar.make(view, "The result is :" + t.getInfo(new Module()), Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                 }catch (Exception ex){
                     ex.printStackTrace();
@@ -60,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if($change != null){
+            return $change.onOptionsItemSelected(item);
+        }
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -67,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            Snackbar.make(item.getActionView(), "Click Settings", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
             return true;
         }
 
@@ -76,16 +92,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnPatch){
-            InstantFix.getPatchFromAsset(getApplicationContext());
+
             if(InstantFix.patch(getApplicationContext())){
-                Snackbar.make(view, "Apply the patch", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Apply the patch", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
             }else{
-                Snackbar.make(view, "No patch or failed", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "No patch or failed", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
             }
-        }else if(view.getId() == R.id.btnTest){
-            Snackbar.make(view, "The result is :" + t1.getInfo(new Module()), Snackbar.LENGTH_LONG)
+        } else if(view.getId() == R.id.btnGetPatch){
+            InstantFix.getPatchFromAsset(getApplicationContext());
+            Snackbar.make(view, "Get the patch", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+        } else if(view.getId() == R.id.btnRevertPatch){
+            InstantFix.revertPatch(getApplicationContext());
+            Snackbar.make(view, "Revert the patch", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+        } else if(view.getId() == R.id.btnTest){
+            Snackbar.make(view, "The result is :" + t1.getInfo(new Module()), Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
         }
     }
