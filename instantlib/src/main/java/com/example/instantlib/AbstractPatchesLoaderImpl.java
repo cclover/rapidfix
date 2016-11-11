@@ -38,17 +38,31 @@ public abstract class AbstractPatchesLoaderImpl implements PatchesLoader {
                 // force the field accessibility as the class might not be "visible"
                 // from this package.
                 changeField.setAccessible(true);
+                changeField.set(null, o);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean unLoad() {
+        try {
+            for (String className : getPatchedClasses()) {
+                ClassLoader cl = getClass().getClassLoader();
+                Class<?> modifiedClass = cl.loadClass(className);
+                Field changeField = modifiedClass.getDeclaredField("$change");
+                // force the field accessibility as the class might not be "visible"
+                // from this package.
+                changeField.setAccessible(true);
 
                 // If there was a previous change set, mark it as obsolete:
                 Object previous = changeField.get(null);
                 if (previous != null) {
-                    Field isObsolete = previous.getClass().getDeclaredField("$obsolete");
-                    if (isObsolete != null) {
-                        isObsolete.set(null, true);
-                    }
+                    changeField.set(null, null);
                 }
-                changeField.set(null, o);
-
             }
         } catch (Exception e) {
             e.printStackTrace();

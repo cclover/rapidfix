@@ -19,4 +19,5 @@ package com.example.instantlib;
 public interface PatchesLoader {
 
     boolean load();
+    boolean unLoad();
 }

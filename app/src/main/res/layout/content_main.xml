@@ -30,8 +30,22 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/btnGetPatch"
+        android:text="GetPatch"
+        android:layout_below="@id/btnTest"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/btnPatch"
         android:text="Patch"
-        android:layout_below="@id/btnTest"/>
+        android:layout_below="@id/btnGetPatch"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnRevertPatch"
+        android:text="RevertPatch"
+        android:layout_below="@id/btnPatch"/>
 
 </RelativeLayout>
