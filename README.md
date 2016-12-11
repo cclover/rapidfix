@@ -1,7 +1,8 @@
 # rapidfix
-不需要重启APP修改程序方法。这也只是个Demo，提供一种思路。 和Instant Run实现的方式是一样的。
+这个项目是一种不需要重启APP修改程序方法。这也只是个Demo，提供一种思路。 和Instant Run实现的方式是一样的。
 
-#现在热修复思路
+
+## 常见热修复思路
 
 目前Android上热修复的思路基本都是利用ClassLoader加载的原理，用新的class替换老的同名class，这种方式的确定是进程需要关闭重启。还有其他类似腾讯Tinker的替换dex(dex文件合并)的方式。但是总的思路还是抛弃来的class，利用新的。
 
@@ -10,7 +11,7 @@
 这是一个比较好的思路。所以我在思考Java层能否也做类似的事情，这样可以最大限度的提高兼容性。因为修改Native层会随着 Android VM版本的变化而变化，而且各个厂商也可能会修改，不过实际上大多厂商不太会去修改VM方法执行的flow，起码我们之前是没有修改过。
 
 
-#新思路
+## 新思路
 
 Native层进行修改，Java层可以吗？ ART中Java层的Class，Method， Field内在VM的 mirror目录下都有对应的c++类，而c++的类的字段，在Java中都有
 
@@ -35,16 +36,16 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
 看看关键代码，有directMethods和virtualMethods 都是long形，就是方法表的指针，把这个修改成新的class的是不是就OK了？尝试反射去那一下这2个字段，结果出错，提示找不到。在看看，都有transient关键字。应该是这个导致C++层的字段不能序列化，不能和Java层映射起来。猜测是这样，实际不是很确定。所以没有办法。此路不通。
 
 
-#在换个思路
+## 在换个思路
 
 要想从Java层修改VM的东西看来是走不通了。突然想到代理模式。既然原来的类要被新的类替换必须重启，要实现不重启修复，就不能放弃掉来的类。既然不能抛弃，那就利用起来，让老的类变成一个代理类，正常情况调用自己的方法，当有了patch的时候，自己变成代理类调用patch中的方法。
 
 
-#原理
+### 原理
 
 要怎么才能让他实现这样的功能，需要一个触发条件，if xxx就执行原有代码， else 就执行新的
 
-### 原始的类
+#### 原始的类
 ```java
 
 class Test {
@@ -56,7 +57,7 @@ class Test {
 }
 ```
 
-### 需要支持动态修复，修改后类
+#### 需要支持动态修复，修改后类
 
 ```java
 
@@ -78,7 +79,7 @@ class Test {
 增加一个同类型的静态字段，每个方法都要埋入一段逻辑，stub字段为null，这个时候执行 x+y的方法，如果不为null就执行stub的add方法。这里可能有以为，执行Test的add方法，那不是一样了吗？没区别啊？？ 
 
 
-### 是否可行？
+#### 是否可行？
 
 这里就是关键，我们这个Test stub指向的并不是当前的Test对象，而是修改后的Test类。这样就OK了？
 
@@ -102,7 +103,8 @@ class TestModify extend Test {
 这样我们创建了一个Test的子类，TestModify。并生成patch.jar
 
 
-###加载patch
+#### 加载patch
+
 有了上面的基础，我们在运行时如果检测到了patch.jar， 就新建一个DexClassLoader加载这个dex文件。然后通过反射创建一个TestModify的实例对象。在通过反射获得Test类的静态字段stub，并把这个TestModify的实例设置到stub上，结果就会变成：
 
 ```java
@@ -124,7 +126,7 @@ class Test {
 最终执行TestModify的add方法，达到动态修改程序逻辑的目的。这样还有一个好出，一旦patch有问题，可以很容易的回滚。
 
 
-#项目运行
+### 项目运行
 上传的Demo编译后可以直接运行。点击Test，然后Getpatch 然后apply ，在点击Test马上就生效
 
 ![image](https://github.com/cclover/store/blob/master/images/Screenshot_1481380893.png)
@@ -132,7 +134,7 @@ class Test {
 ![image](https://github.com/cclover/store/blob/master/images/Screenshot_1481380902.png)
 
 
-#项目编译
+### 项目编译
 
 正常直接编译就可以了，如果要生成patch，因为我没有为这个写脚本，所以需要手动进行。 
 * 1.为你要修改的类创建一个子类，并修改子类的名字为name$override，也就是在原有名字后加上$overrid。
@@ -143,7 +145,7 @@ class Test {
 * 6.把patch.jar放到程序的files目录下就可以测试了。
 
 
-#问题
+## 问题
 
 研究一个技术的原理总是很简单，但是当要产品话，运用到实际的项目中，还有很长的一段路。不光要考虑怎么实现，还要考虑实际使用中代码的管理，patch的生成发布等等。所以存在一些问题：
 
@@ -173,5 +175,5 @@ class Test {
 如果修改的方法通过super调用了父类的方法，我们直接修改，新的子类会不停调用父类，导致over flow，所以目前只能在新的子类中不用super调用，而老的类插入的代码必须插入在super调用之后
 
 
-#后记
+## 后记
 所以这个方案还是有不少问题，Demo也只是在一个很初始的状态。不过思路是不错的。如果你属性Android Studio的Instant Run原理，那么你会发现，两者思想基本是一样的。不同的是这里使用继承的方式。而InstantRun是一个全新的类。 后来我也是利用了Instant完全一样的原理，写了一套新的InstantFix框架，并且踩了很多坑，验证了混淆、multi-dex、爱加密这些情况，还有实际使用中修改，发布流程。其实最复杂的倒不是怎么打patch，而是要写gradle插件来插入代码，生成patch。 因为这个后面会引用到产品中，所以现在是不会开源。但是有了这个原理，并且InstantRun的原理通过看Android gradle的源码可以搞清楚，所以其实也不是很复杂的东西。
